@@ -6,3 +6,6 @@ imbalanced-learn
 fastapi
 uvicorn
 joblib
+pytest
+hypothesis
+pyyaml
