@@ -16,8 +16,10 @@ from typing import List, Dict, Any, Tuple, Optional
 from datetime import datetime
 
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.svm import SVC
+from sklearn.svm import LinearSVC
+from sklearn.calibration import CalibratedClassifierCV
 from sklearn.linear_model import LogisticRegression
+from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import (
     accuracy_score,
     precision_score,
@@ -79,20 +81,25 @@ class ModelTrainer:
                 n_estimators=100,
                 class_weight='balanced',
                 random_state=self.random_seed,
-                n_jobs=-1  # Use all available cores
+                n_jobs=-1
             ),
-            "SVM": lambda: SVC(
-                kernel='rbf',
+            "SVM": lambda: CalibratedClassifierCV(LinearSVC(
                 class_weight='balanced',
                 random_state=self.random_seed,
-                probability=True  # Enable probability estimates
-            ),
+                max_iter=2000
+            )),
             "LogisticRegression": lambda: LogisticRegression(
                 penalty='l2',
                 class_weight='balanced',
                 random_state=self.random_seed,
                 max_iter=1000,
                 solver='lbfgs'
+            ),
+            "DecisionTree": lambda: DecisionTreeClassifier(
+                class_weight='balanced',
+                random_state=self.random_seed,
+                max_depth=20,
+                min_samples_leaf=5
             )
         }
         
